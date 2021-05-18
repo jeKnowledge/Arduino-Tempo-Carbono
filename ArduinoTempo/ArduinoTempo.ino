@@ -43,7 +43,7 @@ char strDATE[BUF_SIZE]= "0 YEARS 0 DAYS";
 
 void setup()
 {
-  Serial.begin(57600);git 
+  Serial.begin(57600);
   
   row0.begin();
   row1.begin();
