@@ -6,8 +6,6 @@
 
 #include "Font_Data.h"
 
-#define PRINT(s, v) { Serial.print(F(s)); Serial.print(v); }
-
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
 #define MAX_DEVICES 16
 
@@ -50,13 +48,13 @@ void setup()
   row2.begin();
 
   row0.setFont(NULL);
-  row1.setFont(NULL);
-  row2.setFont(NULL);
+  row1.setFont(BigFontLower);
+  row2.setFont(BigFontUpper);
   
   
-  row2.displayText("Hello! I am a Climate Clock", PA_LEFT, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
-  row1.displayText(strDATE, PA_LEFT, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
-  row0.displayText(strTIME, PA_LEFT, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+  row2.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+  row1.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+  row0.displayText(strDATE, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
 
   if (!RTC.isRunning())
     RTC.control(DS1307_CLOCK_HALT, DS1307_OFF);
@@ -116,9 +114,9 @@ void loop()
     HRSLEFT = limitdate.hour - currentdate.hour;
     MINSLEFT = limitdate.minute - currentdate.minute;
     SECSLEFT = limitdate.sec - currentdate.sec;
-    
-    sprintf(strTIME, "%02d HRS %02d MINS %02d SECS",HRSLEFT%24,MINSLEFT,SECSLEFT);
-    sprintf(strDATE, "%d YEARS %d Days",YEARSLEFT,DAYSLEFT%365);
+
+    sprintf(strTIME, "%02d:%02d:%02d",HRSLEFT%24,MINSLEFT,SECSLEFT);
+    sprintf(strDATE, "%d YEARS %d DAYS",YEARSLEFT,DAYSLEFT%365);
    
     row0.displayReset();
     row1.displayReset();
