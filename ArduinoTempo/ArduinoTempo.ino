@@ -36,7 +36,7 @@ MD_Parola row2 = MD_Parola(HARDWARE_TYPE, DATA_PIN_2, CLK_PIN_2, CS_PIN_2, MAX_D
 // Global message buffers shared by Serial and Scrolling functions
 #define BUF_SIZE  75
 
-char strTIME[BUF_SIZE]= "00 HRS 00 MINS 00 SECS";
+char strTIME[BUF_SIZE]= "00:00:00";
 char strDATE[BUF_SIZE]= "0 YEARS 0 DAYS";
 
 void setup()
@@ -47,14 +47,14 @@ void setup()
   row1.begin();
   row2.begin();
 
-  row0.setFont(NULL);
-  row1.setFont(BigFontLower);
-  row2.setFont(BigFontUpper);
+  row0.setFont(BigFontLower);
+  row1.setFont(BigFontUpper);
+  row2.setFont(NULL);
   
   
-  row2.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+  row2.displayText(strDATE, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
   row1.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
-  row0.displayText(strDATE, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+  row0.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
 
   if (!RTC.isRunning())
     RTC.control(DS1307_CLOCK_HALT, DS1307_OFF);
