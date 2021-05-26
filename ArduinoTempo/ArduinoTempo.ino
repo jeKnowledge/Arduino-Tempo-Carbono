@@ -109,7 +109,7 @@ void loop()
     RTC.readTime();
     lastTime = millis();
     
-    YEARSLEFT = limitdate.year - currentdate.year;
+    YEARSLEFT = abs(limitdate.year - currentdate.year);
     DAYSLEFT = limitdate.day - currentdate.day;
     HRSLEFT = limitdate.hour - currentdate.hour;
     MINSLEFT = limitdate.minute - currentdate.minute;
