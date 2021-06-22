@@ -7,7 +7,7 @@
 #include "Font_Data.h"
 
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-#define MAX_DEVICES 16
+#define MAX_DEVICES 8 //mudar isto para testar metade.
 
 #define CLK_PIN_0   4 // 13  // or SCK
 #define DATA_PIN_0  3 // 11  // or MOSI
@@ -30,13 +30,11 @@ MD_Parola row0 = MD_Parola(HARDWARE_TYPE, DATA_PIN_0, CLK_PIN_0, CS_PIN_0, MAX_D
 MD_Parola row1 = MD_Parola(HARDWARE_TYPE, DATA_PIN_1, CLK_PIN_1, CS_PIN_1, MAX_DEVICES);
 MD_Parola row2 = MD_Parola(HARDWARE_TYPE, DATA_PIN_2, CLK_PIN_2, CS_PIN_2, MAX_DEVICES);
 
-// Text parameters
-#define CHAR_SPACING  1 // pixels between characters
-
 // Global message buffers shared by Serial and Scrolling functions
 #define BUF_SIZE  75
-
 char strTIME[BUF_SIZE]= "00:00:00";
+//char strTIMEsmall1[BUF_SIZE]= "00 HOURS";
+//char strTIMEsmall2[BUF_SIZE]= "00 MINUTES 00 DAYS";
 char strDATE[BUF_SIZE]= "0 YEARS 0 DAYS";
 
 void setup()
@@ -47,15 +45,19 @@ void setup()
   row1.begin();
   row2.begin();
 
-  row0.setFont(BigFontLower);
-  row1.setFont(BigFontUpper);
+  row0.setFont(BigFontLower); //grande
+  row1.setFont(BigFontUpper); //grande
+  //row0.setFont(NULL);
+  //row1.setFont(NULL);
   row2.setFont(NULL);
   
   
   row2.displayText(strDATE, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
-  row1.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
-  row0.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
-
+  row1.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT); //grande
+  row0.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT); //grande
+  //row1.displayText(strTIMEsmall1, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+  //row0.displayText(strTIMEsmall2, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+  
   if (!RTC.isRunning())
     RTC.control(DS1307_CLOCK_HALT, DS1307_OFF);
     
@@ -115,9 +117,14 @@ void loop()
     MINSLEFT = limitdate.minute - currentdate.minute;
     SECSLEFT = limitdate.sec - currentdate.sec;
 
-    sprintf(strTIME, "%02d:%02d:%02d",HRSLEFT%24,MINSLEFT,SECSLEFT);
-    sprintf(strDATE, "%d YEARS %d DAYS",YEARSLEFT,DAYSLEFT%365);
-   
+
+    //sprintf(strTIMEsmall1, "%02d HOURS",HRSLEFT%24);
+    //sprintf(strTIMEsmall2, "%02d M %02d S",MINSLEFT,SECSLEFT);
+
+    sprintf(strTIME, "%02d:%02d:%02d",HRSLEFT%24,MINSLEFT,SECSLEFT); //grande.
+    sprintf(strTIME, "%02d:%02d:%02d",HRSLEFT%24,MINSLEFT,SECSLEFT); //grande.
+    //sprintf(strDATE, "%d YEARS %d DAYS",YEARSLEFT,DAYSLEFT%365); //grande.
+    sprintf(strDATE, "%d Y %d DAYS",YEARSLEFT,DAYSLEFT%365);
     row0.displayReset();
     row1.displayReset();
     row2.displayReset();
