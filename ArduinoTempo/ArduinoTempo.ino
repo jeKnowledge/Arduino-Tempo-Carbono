@@ -1,3 +1,4 @@
+  
 #include <MD_DS1307.h>
 #include <MD_Parola.h>
 #include <MD_MAX72xx.h>
@@ -122,7 +123,7 @@ void loop()
     //sprintf(strTIMEsmall2, "%02d M %02d S",MINSLEFT,SECSLEFT);
 
     sprintf(strTIME, "%02d:%02d:%02d",HRSLEFT%24,MINSLEFT,SECSLEFT); //grande.
-    sprintf(strTIME, "%02d:%02d:%02d",HRSLEFT%24,MINSLEFT,SECSLEFT); //grande.
+    Serial.println(strTIME);
     //sprintf(strDATE, "%d YEARS %d DAYS",YEARSLEFT,DAYSLEFT%365); //grande.
     sprintf(strDATE, "%d Y %d DAYS",YEARSLEFT,DAYSLEFT%365);
     row0.displayReset();
