@@ -7,7 +7,7 @@
 #include "Font_Data.h"
 
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-#define MAX_DEVICES 9 //mudar isto para testar metade.
+#define MAX_DEVICES 8 //mudar isto para testar metade.
 
 #define CLK_PIN_0   4 // 13  // or SCK
 #define DATA_PIN_0  3 // 11  // or MOSI
@@ -93,7 +93,7 @@ struct date limitdate = {
   .year = 2028, 
   .month = 01,
   .day = 01,
-  .hour = 00,
+  .hour = 12,
   .minute = 00, 
   .sec = 00,
 };
@@ -129,8 +129,8 @@ void loop()
     lastTime = millis();
   
     YEARSLEFT = abs(limitdate.year - currentdate.year-1);
-    DAYSLEFT = abs(dayspassedinyear(currentdate.day,currentdate.month,currentdate.year,limitdate.day));  
-    HRSLEFT = abs(24- limitdate.hour - currentdate.hour-1)&24;
+    DAYSLEFT = abs(dleft(currentdate.day,currentdate.month,currentdate.year,limitdate.day));  
+    HRSLEFT = abs(24- limitdate.hour - currentdate.hour-1)%24;
     MINSLEFT = abs(60-limitdate.minute - currentdate.minute-1)%60;
     SECSLEFT = abs(60-limitdate.sec - currentdate.sec)%60;
 
@@ -147,7 +147,7 @@ void loop()
     Serial.println(strTIME);
     
     //sprintf(strDATE, "%d YEARS %d DAYS",YEARSLEFT,DAYSLEFT%366); //grande.
-    sprintf(strDATE, "%d YRS %d DYS",YEARSLEFT,DAYSLEFT%366);
+    sprintf(strDATE, "%dY %d DAYS",YEARSLEFT,DAYSLEFT%366);
     row0.displayReset();
     row1.displayReset();
     row2.displayReset();
@@ -170,7 +170,7 @@ void printDateTime(const RtcDateTime& dt){
     Serial.println(datestring); //IMPRIME NO MONITOR SERIAL AS INFORMAÇÕES
 }
 
-int dayspassedinyear(int day, int month, int year, int limitedateday){
+int dleft(int day, int month, int year, int limitedateday){
   int sum = 0;
   int days_in_feb = 28;
   int daysinmonth = 0;
@@ -201,7 +201,6 @@ int dayspassedinyear(int day, int month, int year, int limitedateday){
     Serial.println(daysinmonth);*/
     sum += daysinmonth;
   }
-
   sum += day;
   return totaldays-sum;  
 }
