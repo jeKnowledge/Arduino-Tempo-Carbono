@@ -90,10 +90,10 @@ struct date {
 //http://prntscr.com/13331o6 (Em 18:28 18/05/2021)
 
 struct date limitdate = {
-  .year = 2028, 
-  .month = 01,
-  .day = 01,
-  .hour = 12,
+  .year = 2029, 
+  .month = 7,
+  .day = 27,
+  .hour = 20,
   .minute = 00, 
   .sec = 00,
 };
@@ -129,10 +129,10 @@ void loop()
     lastTime = millis();
   
     YEARSLEFT = abs(limitdate.year - currentdate.year-1);
-    DAYSLEFT = abs(dleft(currentdate.day,currentdate.month,currentdate.year,limitdate.day));  
+    DAYSLEFT = abs(dateDiff(currentdate.year,currentdate.month,currentdate.day,limitdate.year,limitdate.month,limitdate.day));  
     HRSLEFT = abs(24- limitdate.hour - currentdate.hour-1)%24;
     MINSLEFT = abs(60-limitdate.minute - currentdate.minute-1)%60;
-    SECSLEFT = abs(60-limitdate.sec - currentdate.sec)%60;
+    SECSLEFT = abs(60-limitdate.sec - currentdate.sec-1)%60;
 
 
     //sprintf(strTIMEsmall1, "%02d HOURS",HRSLEFT%24);
@@ -170,37 +170,31 @@ void printDateTime(const RtcDateTime& dt){
     Serial.println(datestring); //IMPRIME NO MONITOR SERIAL AS INFORMAÇÕES
 }
 
-int dleft(int day, int month, int year, int limitedateday){
-  int sum = 0;
-  int days_in_feb = 28;
-  int daysinmonth = 0;
-  int totaldays=365;
-  
-  //não interessa verificar ano bissexto porque vou ver os dias restantes à mesma, ou seja, somar 1 e subtrair 1 é a mesma coisa.
-  for(int i =1; i<month; i++){
-    if(i ==2){
-      daysinmonth = days_in_feb;
-      /*Serial.println("");
-      Serial.println(daysinmonth);*/
-      sum += daysinmonth;
-      continue; //passar o resto deste loop
+int dateDiff(int year1, int mon1, int day1, int year2, int mon2, int day2)
+{
+    int ref,dd1,dd2,i;
+    ref = year1;
+    if(year2<year1)
+    ref = year2;
+    dd1=0;
+    dd1=dater(mon1);
+    for(i=ref;i<year1;i++)
+    {
+        if(i%4==0)
+        dd1+=1;
     }
-    if(i<8){
-      if(i%2==1)
-        daysinmonth = 31;
-      else 
-        daysinmonth = 30;
+    dd1=dd1+day1+(year1-ref)*365;
+    dd2=0;
+    for(i=ref;i<year2;i++)
+    {
+        if(i%4==0)
+        dd2+=1;
     }
-    else {
-      if(i%2==0)
-        daysinmonth = 31;
-      else
-        daysinmonth=30;
-    }
-   /* Serial.println("");
-    Serial.println(daysinmonth);*/
-    sum += daysinmonth;
-  }
-  sum += day;
-  return totaldays-sum;  
+    dd2=dater(mon2)+dd2+day2+((year2-ref)*365);
+    return dd2-dd1;
+}
+
+int dater(int x)
+{ const int dr[]= { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
+  return dr[x-1];
 }
