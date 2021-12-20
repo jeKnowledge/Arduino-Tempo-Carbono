@@ -103,7 +103,6 @@ struct date limitdate = {
 void loop()
 {
   static uint32_t lastTime = 0; // millis() memory
-  static uint8_t  display = 0;  // current display mode
   
   row0.displayAnimate();
   row1.displayAnimate();
@@ -151,6 +150,22 @@ void loop()
     row0.displayReset();
     row1.displayReset();
     row2.displayReset();
+  }
+  if(HOURSLEFT==1){
+    row0.begin();
+    row1.begin();
+    row2.begin();
+  
+    row0.setFont(BigFontLower); //grande
+    row1.setFont(BigFontUpper); //grande
+    //row0.setFont(NULL);
+    //row1.setFont(NULL);
+    row2.setFont(NULL);
+    
+    
+    row2.displayText(strDATE, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+    row1.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT); //grande
+    row0.displayText(strTIME, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT); //grande
   }
 }
 
