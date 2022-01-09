@@ -1,11 +1,11 @@
-   
 #include "ThreeWire.h" //INCLUSÃO DA BIBLIOTECA
 #include "RtcDS1302.h" //INCLUSÃO DA BIBLIOTECA
+#include "Font_Data.h"
+
 #include <MD_MAX72xx.h>
 #include <SPI.h>
 #include <Wire.h>
 
-#include "Font_Data.h"
 
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
 #define MAX_DEVICES 8 //mudar isto para testar metade.
@@ -75,7 +75,7 @@ void setup()
   
   Rtc.Begin(); //INICIALIZA O RTC
   RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__); //VARIÁVEL RECEBE DATA E HORA DE COMPILAÇÃO
-  //printDateTime(compiled);
+  printDateTime(compiled);
   //Serial.println();
   
   if(Rtc.GetIsWriteProtected()){ //SE O RTC ESTIVER PROTEGIDO CONTRA GRAVAÇÃO, FAZ
@@ -132,12 +132,13 @@ struct date limitdate = {
 void loop()
 {
   static uint32_t lastTime = 0; // millis() memory
-  
+  unsigned long currentMillis = millis();
   
 
   // Finally, adjust the time string if we have to
-  if (millis() - lastTime >= 1000)
+  if (currentMillis - lastTime >= 1000)
   {
+    Serial.println(currentMillis);
     row0.displayAnimate();
     row1.displayAnimate();
     row2.displayAnimate();
@@ -151,9 +152,9 @@ void loop()
     .minute = now.Minute(), 
     .sec = now.Second(),
     };
-    //printDateTime(now);
+    printDateTime(now);
     
-    lastTime = millis();
+    lastTime = currentMillis;
   
     YEARSLEFT = abs(limitdate.year - currentdate.year-1);
     DAYSLEFT = abs(dateDiff(currentdate.year,currentdate.month,currentdate.day,limitdate.year,limitdate.month,limitdate.day));  
@@ -164,12 +165,12 @@ void loop()
     
     char currentdatestrbug[200];
     sprintf(currentdatestrbug, "TRUED{%02d:%02d:%02d %d day %d month %d year}", currentdate.hour, currentdate.minute,currentdate.sec,currentdate.day,currentdate.month, currentdate.year);
-    //Serial.println(currentdatestrbug);
+    Serial.println(currentdatestrbug);
     
     sprintf(strTIME, "%02d:%02d:%02d",HRSLEFT,MINSLEFT,SECSLEFT); //grande.
     sprintf(strDATE, "%dY %d DAYS",YEARSLEFT,DAYSLEFT%366);
-    //Serial.print(strDATE);
-    //Serial.println(strTIME);
+    Serial.print(strDATE);
+    Serial.println(strTIME);
     
     //sprintf(strTIMEsmall1, "%02d HOURS",HRSLEFT%24);
     //sprintf(strTIMEsmall2, "%02d M %02d S",MINSLEFT,SECSLEFT);    
@@ -178,14 +179,16 @@ void loop()
     row0.displayReset();
     row1.displayReset();
     row2.displayReset();
-    if(HRSLEFT+1%2==0 && MINSLEFT==12 && SECSLEFT==32)
+    if(MINSLEFT==00 && SECSLEFT==30)
     {
-     digitalWrite(Reset, LOW);
+      interrupts();
+      lastTime = 0;
+      digitalWrite(Reset, LOW);
     }
   }
 }
 
-/*void printDateTime(const RtcDateTime& dt){
+void printDateTime(const RtcDateTime& dt){
     char datestring[20]; //VARIÁVEL ARMAZENA AS INFORMAÇÕES DE DATA E HORA
  
     snprintf_P( datestring, 
@@ -199,7 +202,7 @@ void loop()
                 dt.Second()
             ); //SEGUNDOS
     Serial.println(datestring); //IMPRIME NO MONITOR SERIAL AS INFORMAÇÕES
-}*/
+}
 
 int dateDiff(int year1, int mon1, int day1, int year2, int mon2, int day2)
 {
